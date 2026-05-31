@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e0eAFC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            height: 100vh;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            display: flex;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .auth-banner {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-banner::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: -50px;
+            left: -50px;
+        }
+        
+        .auth-banner::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            bottom: -30px;
+            right: -30px;
+        }
+        
+        .auth-banner h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            z-index: 1;
+        }
+        
+        .auth-banner p {
+            text-align: center;
+            opacity: 0.9;
+            z-index: 1;
+            line-height: 1.6;
+        }
+        
+        .auth-form-wrapper {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .auth-form {
+            opacity: 1;
+            transition: all 0.4s ease;
+        }
+        
+        .auth-form.hidden {
+            display: none;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+        }
+        
+        .form-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .toggle-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+        }
+        
+        .toggle-text a {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .auth-banner {
+                padding: 2rem;
+                display: none; /* Hide banner on mobile for cleaner look */
+            }
+            .auth-form-wrapper {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container animate-fade-in">
+        <!-- Banner Side -->
+        <div class="auth-banner">
+            <h1>LibMaster</h1>
+            <p>Manage your library with style and efficiency. Access thousands of books, track members, and streamline operations.</p>
+        </div>
+
+        <!-- Form Side -->
+        <div class="auth-form-wrapper">
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p class="text-muted">Please enter your details to sign in.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="admin@library.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                        <i class="fas fa-eye" id="toggle-password" style="position: absolute; right: 15px; top: 12px; cursor: pointer; color: var(--text-muted);"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    Sign In <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <p class="toggle-text">
+                    Don't have an account? <a id="show-signup">Sign up</a>
+                </p>
+            </form>
+
+            <!-- Signup Form (Hidden by default) -->
+            <form id="signup-form" class="auth-form hidden">
+                <div class="form-header">
+                    <h2>Create Account</h2>
+                    <p class="text-muted">Start your journey with us today.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="signup-name" class="form-control" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="signup-email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="signup-password" class="form-control" placeholder="Create a password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                    Create Account
+                </button>
+                
+                <p class="toggle-text">
+                    Already have an account? <a id="show-login">Sign in</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Auth Page Specific Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const showSignupBtn = document.getElementById('show-signup');
+            const showLoginBtn = document.getElementById('show-login');
+            
+            // Toggle Forms
+            showSignupBtn.addEventListener('click', () => {
+                loginForm.classList.add('hidden');
+                setTimeout(() => {
+                    loginForm.style.display = 'none';
+                    signupForm.style.display = 'block';
+                    setTimeout(() => signupForm.classList.remove('hidden'), 10);
+                }, 400);
+            });
+            
+            showLoginBtn.addEventListener('click', () => {
+                signupForm.classList.add('hidden');
+                setTimeout(() => {
+                    signupForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                    setTimeout(() => loginForm.classList.remove('hidden'), 10);
+                }, 400);
+            });
+
+            // Handle Login
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                if (Auth.login(email, password)) {
+                    // Success animation
+                    const btn = loginForm.querySelector('button');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Success';
+                    btn.classList.add('btn-success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 800);
+                } else {
+                    alert('Invalid credentials! Try admin@library.com / password123');
+                }
+            });
+
+            // Handle Register
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                
+                const users = Storage.get(DB_KEYS.USERS) || [];
+                if (users.find(u => u.email === email)) {
+                    alert('User already exists!');
+                    return;
+                }
+                
+                const newUser = { id: 'U' + Date.now(), name, email, password, role: 'student' };
+                users.push(newUser);
+                Storage.set(DB_KEYS.USERS, users);
+                
+                alert('Account created! Please login.');
+                showLoginBtn.click();
+            });
+
+            // Password Toggle
+            const togglePass = document.getElementById('toggle-password');
+            const passInput = document.getElementById('login-password');
+            togglePass.addEventListener('click', () => {
+                const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passInput.setAttribute('type', type);
+                togglePass.classList.toggle('fa-eye');
+                togglePass.classList.toggle('fa-eye-slash');
+            });
+        });
+    </script>
+</body>
+</html>

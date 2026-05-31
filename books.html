@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Manager - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover {
+            height: 200px;
+            background: #eee;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-sm);
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        .book-info {
+            padding-top: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-author {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <i class="fas fa-book-reader fa-2x" style="color: var(--primary);"></i>
+                <h2>LibMaster</h2>
+            </div>
+
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link active">
+                        <i class="fas fa-book"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="issued.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Issue/Return</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" id="logout-btn" style="color: var(--danger);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="top-navbar">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="book-search" placeholder="Search title, author, ISBN...">
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Admin+User" alt="Profile">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Books Content -->
+            <section class="books-content animate-fade-in">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div>
+                        <h1>Books Directory</h1>
+                        <p class="text-muted">Manage your library collection</p>
+                    </div>
+                    <a href="add-book.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Book
+                    </a>
+                </div>
+
+                <!-- Filters -->
+                <div class="card"
+                    style="margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" id="filter-category" class="form-control" placeholder="Filter by Category">
+                    </div>
+                    <div>
+                        <select id="sort-books" class="form-control" style="width: auto;">
+                            <option value="newest">Newest First</option>
+                            <option value="az">Title (A-Z)</option>
+                            <option value="za">Title (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Grid -->
+                <div class="books-grid" id="books-container">
+                    <!-- Books will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('books-container');
+            const searchInput = document.getElementById('book-search');
+            const categoryInput = document.getElementById('filter-category');
+            const sortSelect = document.getElementById('sort-books');
+
+            let books = Storage.get(DB_KEYS.BOOKS) || [];
+
+            function renderBooks(data) {
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+                            <i class="fas fa-book-open fa-3x" style="margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <h3>No books found</h3>
+                            <p>Try adjusting your search or add a new book.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.forEach(book => {
+                    const availableClass = book.available > 0 ? 'badge-success' : 'badge-danger';
+                    const availableText = book.available > 0 ? 'Available' : 'Out of Stock';
+
+                    const card = document.createElement('div');
+                    card.className = 'card book-card animate-fade-in';
+                    card.innerHTML = `
+                        <div class="book-cover">
+                            <span class="badge ${availableClass} book-badge">${availableText}</span>
+                            <img src="${book.cover || 'https://via.placeholder.com/200x300?text=No+Cover'}" alt="${book.title}">
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-author">by ${book.author}</p>
+                            <div style="margin-top: 0.5rem;">
+                                <span class="badge badge-primary">${book.category}</span>
+                            </div>
+                            <div class="book-meta">
+                                <span class="text-muted"><i class="fas fa-layer-group"></i> ${book.available}/${book.quantity}</span>
+                                <span class="text-muted" style="font-size: 0.8rem;">ISBN: ${book.isbn}</span>
+                            </div>
+                            <div class="book-actions">
+                                <button class="btn btn-secondary" onclick="issueBook('${book.id}')" style="flex: 1; padding: 8px;">Issue</button>
+                                <button class="btn" style="border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px;" onclick="editBook('${book.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn" style="border: 1px solid var(--border-color); color: var(--danger); padding: 8px;" onclick="deleteBook('${book.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            function filterBooks() {
+                const term = searchInput.value.toLowerCase();
+                const category = categoryInput.value.toLowerCase();
+                const sort = sortSelect.value;
+
+                let filtered = books.filter(b => {
+                    const matchTerm = b.title.toLowerCase().includes(term) ||
+                        b.author.toLowerCase().includes(term) ||
+                        b.isbn.includes(term);
+                    const matchCat = b.category.toLowerCase().includes(category);
+                    return matchTerm && matchCat;
+                });
+
+                if (sort === 'az') filtered.sort((a, b) => a.title.localeCompare(b.title));
+                else if (sort === 'za') filtered.sort((a, b) => b.title.localeCompare(a.title));
+                else if (sort === 'newest') filtered.reverse(); // Assuming ID order is chronological
+
+                renderBooks(filtered);
+            }
+
+            // Global Actions
+            window.issueBook = (id) => {
+                window.location.href = `issued.html?bookId=${id}`;
+            };
+
+            window.editBook = (id) => {
+                window.location.href = `add-book.html?id=${id}`;
+            };
+
+            window.deleteBook = (id) => {
+                if (confirm('Are you sure you want to delete this book?')) {
+                    books = books.filter(b => b.id !== id);
+                    Storage.set(DB_KEYS.BOOKS, books);
+                    filterBooks();
+                }
+            };
+
+            // Events
+            searchInput.addEventListener('input', filterBooks);
+            categoryInput.addEventListener('input', filterBooks);
+            sortSelect.addEventListener('change', filterBooks);
+
+            // Initial Render
+            renderBooks(books.reverse());
+        });
+    </script>
+</body>
+
+</html>

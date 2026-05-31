@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <i class="fas fa-book-reader fa-2x" style="color: var(--primary);"></i>
+                <h2>LibMaster</h2>
+            </div>
+
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="issued.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Issue/Return</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link active">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" id="logout-btn" style="color: var(--danger);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="top-navbar">
+                <div class="search-bar">
+
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Admin+User" alt="Profile">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Profile Content -->
+            <section class="animate-fade-in" style="max-width: 900px; margin: 0 auto;">
+                <div class="header-box" style="margin-bottom: 2rem;">
+                    <h1>User Profile</h1>
+                    <p class="text-muted">Manage your account settings and preferences.</p>
+                </div>
+
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    <!-- User Card -->
+                    <div class="card" style="flex: 1; min-width: 250px; text-align: center; height: fit-content;">
+                        <div
+                            style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto 1.5rem; border: 4px solid var(--primary);">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&size=120" id="profile-img" alt="User">
+                        </div>
+                        <h2 id="display-name">Admin User</h2>
+                        <p class="text-muted" id="display-role">Administrator</p>
+
+                        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                            <div style="display: flex; justify-content: space-around;">
+                                <div>
+                                    <h4 style="color: var(--primary);">ACTIVE</h4>
+                                    <p class="text-muted" style="font-size: 0.8rem;">Status</p>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary);">2025</h4>
+                                    <p class="text-muted" style="font-size: 0.8rem;">Member Since</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Form -->
+                    <div class="card" style="flex: 2; min-width: 300px;">
+                        <h3 style="margin-bottom: 1.5rem;">Edit Profile</h3>
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="user-name" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="user-email" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Role</label>
+                                <input type="text" id="user-role" class="form-control" disabled
+                                    style="background: var(--bg-light); cursor: not-allowed;">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Change Password (Optional)</label>
+                                <input type="password" id="user-password" class="form-control"
+                                    placeholder="New Password">
+                            </div>
+
+                            <div style="text-align: right; margin-top: 2rem;">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const users = Storage.get(DB_KEYS.USERS) || [];
+            let currentUser = Auth.getCurrentUser();
+
+            // Populate Data
+            if (currentUser) {
+                document.getElementById('display-name').textContent = currentUser.name;
+                document.getElementById('display-role').textContent = currentUser.role.toUpperCase();
+                document.getElementById('profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&size=120&background=6C63FF&color=fff`;
+
+                document.getElementById('user-name').value = currentUser.name;
+                document.getElementById('user-email').value = currentUser.email;
+                document.getElementById('user-role').value = currentUser.role;
+            }
+
+            // Save Changes
+            document.getElementById('profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const newName = document.getElementById('user-name').value;
+                const newEmail = document.getElementById('user-email').value;
+                const newPass = document.getElementById('user-password').value;
+
+                // Update in User List
+                const index = users.findIndex(u => u.id === currentUser.id);
+                if (index !== -1) {
+                    users[index].name = newName;
+                    users[index].email = newEmail;
+                    if (newPass) users[index].password = newPass; // In real app, hash this
+
+                    currentUser = users[index];
+                    Storage.set(DB_KEYS.USERS, users);
+                    Storage.set(DB_KEYS.CURRENT_USER, currentUser);
+
+                    alert('Profile updated successfully!');
+                    location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

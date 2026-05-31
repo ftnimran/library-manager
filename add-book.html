@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <i class="fas fa-book-reader fa-2x" style="color: var(--primary);"></i>
+                <h2>LibMaster</h2>
+            </div>
+
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link active">
+                        <i class="fas fa-book"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="issued.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Issue/Return</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" id="logout-btn" style="color: var(--danger);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="top-navbar">
+                <div class="search-bar">
+                    <i class="fas fa-arrow-left search-icon" style="cursor: pointer;" onclick="history.back()"></i>
+                    <span style="font-weight: 500; margin-left: 10px;">Back to Books</span>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Admin+User" alt="Profile">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Form Content -->
+            <section class="form-content animate-fade-in" style="max-width: 800px; margin: 0 auto;">
+                <div class="header-box" style="margin-bottom: 2rem; text-align: center;">
+                    <h1 id="page-title">Add New Book</h1>
+                    <p class="text-muted">Fill in the details to add a new book to the library.</p>
+                </div>
+
+                <div class="card">
+                    <form id="book-form">
+                        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                            <!-- Image Upload -->
+                            <div style="flex: 1; min-width: 250px;">
+                                <div class="form-group">
+                                    <label class="form-label">Book Cover</label>
+                                    <div id="image-preview"
+                                        style="width: 100%; height: 300px; border: 2px dashed var(--border-color); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: var(--bg-light);">
+                                        <div style="text-align: center; color: var(--text-muted);">
+                                            <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                                            <p>Click to upload</p>
+                                        </div>
+                                        <img src=""
+                                            style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                    </div>
+                                    <input type="file" id="cover-input" accept="image/*" hidden>
+                                </div>
+                            </div>
+
+                            <!-- Fields -->
+                            <div style="flex: 1.5; min-width: 300px;">
+                                <div class="form-group">
+                                    <label class="form-label">Book Title</label>
+                                    <input type="text" id="title" class="form-control"
+                                        placeholder="e.g. The Great Gatsby" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Author Name</label>
+                                    <input type="text" id="author" class="form-control"
+                                        placeholder="e.g. F. Scott Fitzgerald" required>
+                                </div>
+
+                                <div style="display: flex; gap: 1rem;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label class="form-label">Category</label>
+                                        <select id="category" class="form-control" required>
+                                            <option value="">Select Category</option>
+                                            <option value="Fiction">Fiction</option>
+                                            <option value="Non-Fiction">Non-Fiction</option>
+                                            <option value="Science">Science</option>
+                                            <option value="Technology">Technology</option>
+                                            <option value="History">History</option>
+                                            <option value="Biography">Biography</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label class="form-label">ISBN</label>
+                                        <input type="text" id="isbn" class="form-control" placeholder="978-..."
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 1rem;">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="number" id="quantity" class="form-control" min="1" value="1"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description (Optional)</label>
+                                    <textarea id="description" class="form-control" rows="3"
+                                        placeholder="Brief summary..."></textarea>
+                                </div>
+
+                                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                                    <button type="button" class="btn" style="border: 1px solid var(--border-color);"
+                                        onclick="history.back()">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Save Book
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('book-form');
+            const preview = document.getElementById('image-preview');
+            const fileInput = document.getElementById('cover-input');
+
+            // Check if Editing
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('id');
+            const books = Storage.get(DB_KEYS.BOOKS) || [];
+
+            if (editId) {
+                const book = books.find(b => b.id === editId);
+                if (book) {
+                    document.getElementById('page-title').textContent = 'Edit Book';
+                    document.getElementById('title').value = book.title;
+                    document.getElementById('author').value = book.author;
+                    document.getElementById('category').value = book.category;
+                    document.getElementById('isbn').value = book.isbn;
+                    document.getElementById('quantity').value = book.quantity;
+                    if (document.getElementById('description')) document.getElementById('description').value = book.description || '';
+
+                    if (book.cover) {
+                        const img = preview.querySelector('img');
+                        const div = preview.querySelector('div');
+                        img.src = book.cover;
+                        img.onload = () => {
+                            img.style.display = 'block';
+                            div.style.display = 'none';
+                        };
+                    }
+                }
+            }
+
+            // Image Upload Logic
+            preview.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const img = preview.querySelector('img');
+                        const div = preview.querySelector('div');
+                        img.src = ev.target.result;
+                        img.style.display = 'block';
+                        div.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form Submit
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const title = document.getElementById('title').value;
+                const author = document.getElementById('author').value;
+                const category = document.getElementById('category').value;
+                const isbn = document.getElementById('isbn').value;
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const desc = document.getElementById('description').value;
+                const coverImg = preview.querySelector('img').src;
+                const cover = coverImg.startsWith('data:') || coverImg.startsWith('http') ? coverImg : ''; // Only save if valid
+
+                if (editId) {
+                    // Update
+                    const index = books.findIndex(b => b.id === editId);
+                    if (index !== -1) {
+                        // Preserve available count logic relative to quantity change
+                        const oldQty = books[index].quantity;
+                        const oldAvail = books[index].available;
+                        const newAvail = oldAvail + (quantity - oldQty);
+
+                        books[index] = {
+                            ...books[index],
+                            title, author, category, isbn, quantity,
+                            available: newAvail < 0 ? 0 : newAvail, // Prevent negative
+                            description: desc,
+                            cover: cover || books[index].cover
+                        };
+                        Storage.set(DB_KEYS.BOOKS, books);
+                        alert('Book updated successfully!');
+                    }
+                } else {
+                    // Create
+                    const newBook = {
+                        id: 'B' + Date.now(),
+                        title, author, category, isbn, quantity,
+                        available: quantity,
+                        description: desc,
+                        cover
+                    };
+                    books.push(newBook);
+                    Storage.set(DB_KEYS.BOOKS, books);
+                    alert('Book added successfully!');
+                }
+
+                window.location.href = 'books.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

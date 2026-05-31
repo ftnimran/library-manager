@@ -4,55 +4,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imran Ali | Portfolio</title>
-    <link rel="icon" href="image/icon_01.png">
-    <link rel="stylesheet" href="SASS/main.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <title>Dashboard - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-
-    <header>
-        <img src="image/icon_01.png" class="logo" alt="Logo">
-        <button class="menu-btn" id="menu-btn">☰</button>
-        <nav id="sidebar">
-            <button class="close-btn" id="close-btn">✖</button>
-            <a href="#home" style="--i:1">Home</a>
-            <a href="#about" style="--i:2">About</a>
-            <a href="#skills" style="--i:3">Skills</a>
-            <a href="#projects" style="--i:4">Projects</a>
-            <a href="#contact" style="--i:5">Contact</a>
-            <a href="#resume" style="--i:6">Resume</a>
-        </nav>
-    </header>
-    <div class="overlay" id="overlay"></div>
-
-
-    <!-- ====================Home Section==================== -->
-
-    <section class="home" id="home">
-        <div class="home-content">
-            <h3>Hello, It's Me</h3>
-            <h1>Imran Ali</h1>
-            <h3>And I'm a <span class="auto-type"> </span></h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.<br> Aliquam, at omnis sit officiis consequatur
-                libero, iusto, quod vel expedita dignissimos deserunt? Iste harum quidem amet odit sed excepturi, quo
-                dolore.</p>
-            <div class="home-sci">
-                <a href="https://www.linkedin.com/in/imran-ali-214373241" target="_blank" style="--i:7"><i class='bx bxl-linkedin'></i></a>
-                <a href="https://github.com/ftnimran" target="_blank" style="--i:8"><i class='bx bxl-github'></i></a>
-                <a href="https://www.instagram.com/ftn_imran/" target="_blank" style="--i:9"><i class='bx bxl-instagram'></i></a>
-                <a href="https://wa.me/7783037329" target="_blank" style="--i:10"><i class='bx bxl-whatsapp'></i></a>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <i class="fas fa-book-reader fa-2x" style="color: var(--primary);"></i>
+                <h2>LibMaster</h2>
             </div>
-            <a href="#" class="btn-box">More About Me</a>
-        </div>
-        <div class="home-content">
-            <img src="image/background_image01.png" alt="">
-        </div>
-    </section>
+
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="issued.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Issue/Return</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" id="logout-btn" style="color: var(--danger);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <nav class="top-navbar">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+
+                <div class="nav-actions">
+                    <div class="notification-icon" style="position: relative; cursor: pointer;">
+                        <i class="far fa-bell" style="font-size: 1.2rem; color: var(--text-muted);"></i>
+                        <span
+                            style="position: absolute; top: -5px; right: -5px; width: 10px; height: 10px; background: var(--danger); border-radius: 50%;"></span>
+                    </div>
+
+                    <button class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+
+                    <div class="profile-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=6C63FF&color=fff"
+                            alt="Profile">
+                    </div>
+
+                    <span id="nav-user-name" style="font-weight: 500;">Admin</span>
+                </div>
+            </nav>
+
+            <!-- Dashboard Content -->
+            <section class="dashboard-content animate-fade-in">
+                <div class="header-box" style="margin-bottom: 2rem;">
+                    <h1>Overview</h1>
+                    <p class="text-muted">Welcome back, here's what's happening today.</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #6C63FF 0%, #8f88ff 100%);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-books">0</h3>
+                            <p>Total Books</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #00BFA6 0%, #4ae0c8 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-members">0</h3>
+                            <p>Total Members</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #FFC107 0%, #ffe082 100%);">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-issued">0</h3>
+                            <p>Issued Books</p>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #FF5252 0%, #ff8a80 100%);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-overdue">0</h3>
+                            <p>Overdue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem;">Books by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 1.5rem;">Issue vs Return</h3>
+                        <canvas id="issueChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load Data for Stats
+            const books = Storage.get(DB_KEYS.BOOKS) || [];
+            const members = Storage.get(DB_KEYS.MEMBERS) || [];
+            const issued = Storage.get(DB_KEYS.ISSUED) || [];
+
+            document.getElementById('stat-total-books').textContent = books.length;
+            document.getElementById('stat-members').textContent = members.length;
+            document.getElementById('stat-issued').textContent = issued.filter(i => i.status === 'Issued').length;
+            document.getElementById('stat-overdue').textContent = issued.filter(i => i.status === 'Overdue').length; // Logic to update later
+
+            // Chart 1: Categories
+            const categories = {};
+            books.forEach(b => {
+                categories[b.category] = (categories[b.category] || 0) + 1;
+            });
+
+            const ctx1 = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: ['#6C63FF', '#00BFA6', '#FFC107', '#FF5252', '#3498db'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Chart 2: Availability
+            const availableBooks = books.reduce((acc, b) => acc + parseInt(b.available), 0);
+            const issuedCount = issued.filter(i => i.status === 'Issued').length;
+
+            const ctx2 = document.getElementById('issueChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Available', 'Issued'],
+                    datasets: [{
+                        label: 'Books Status',
+                        data: [availableBooks, issuedCount],
+                        backgroundColor: ['#00BFA6', '#FF5252'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

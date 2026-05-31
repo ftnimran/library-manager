@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            background: var(--bg-white);
+            transition: var(--transition);
+        }
+
+        .member-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .member-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+        }
+
+        .member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <i class="fas fa-book-reader fa-2x" style="color: var(--primary);"></i>
+                <h2>LibMaster</h2>
+            </div>
+
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="issued.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Issue/Return</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link active">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-item">
+                <a href="#" class="nav-link" id="logout-btn" style="color: var(--danger);">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="top-navbar">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="member-search" placeholder="Search members...">
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Admin+User" alt="Profile">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Members Content -->
+            <section class="animate-fade-in">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <div>
+                        <h1>Members Directory</h1>
+                        <p class="text-muted">Manage library members and students.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal()">
+                        <i class="fas fa-user-plus"></i> Add New Member
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Contact</th>
+                                    <th>Joined Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="members-list">
+                                <!-- Members populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="member-modal">
+        <div class="modal-content">
+            <h2 id="modal-title" style="margin-bottom: 1.5rem;">Add New Member</h2>
+            <form id="member-form">
+                <input type="hidden" id="member-id">
+
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="member-name" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="member-email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" id="member-phone" class="form-control" required>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn" style="border: 1px solid var(--border-color);"
+                        onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let members = Storage.get(DB_KEYS.MEMBERS) || [];
+            const listContainer = document.getElementById('members-list');
+            const searchInput = document.getElementById('member-search');
+
+            // Modal Logic
+            window.openModal = (id = null) => {
+                const modal = document.getElementById('member-modal');
+                const title = document.getElementById('modal-title');
+                const form = document.getElementById('member-form');
+
+                if (id) {
+                    const member = members.find(m => m.id === id);
+                    if (member) {
+                        document.getElementById('member-id').value = member.id;
+                        document.getElementById('member-name').value = member.name;
+                        document.getElementById('member-email').value = member.email;
+                        document.getElementById('member-phone').value = member.phone;
+                        title.textContent = 'Edit Member';
+                    }
+                } else {
+                    form.reset();
+                    document.getElementById('member-id').value = '';
+                    title.textContent = 'Add New Member';
+                }
+
+                modal.classList.add('active');
+            };
+
+            window.closeModal = () => {
+                document.getElementById('member-modal').classList.remove('active');
+            };
+
+            // Render
+            function renderMembers(data) {
+                listContainer.innerHTML = '';
+                if (data.length === 0) {
+                    listContainer.innerHTML = `<tr><td colspan="5" style="text-align:center;">No members found.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(m => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="member-avatar" style="width: 40px; height: 40px;">
+                                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=random" alt="${m.name}">
+                                </div>
+                                <span style="font-weight: 500;">${m.name}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem;">${m.email}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${m.phone}</div>
+                        </td>
+                        <td>${m.joinDate}</td>
+                        <td><span class="badge badge-success">Active</span></td>
+                        <td>
+                            <button class="btn" style="padding: 5px; color: var(--primary);" onclick="openModal('${m.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn" style="padding: 5px; color: var(--danger);" onclick="deleteMember('${m.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    listContainer.appendChild(row);
+                });
+            }
+
+            // Save Member
+            document.getElementById('member-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = document.getElementById('member-id').value;
+                const name = document.getElementById('member-name').value;
+                const email = document.getElementById('member-email').value;
+                const phone = document.getElementById('member-phone').value;
+
+                if (id) {
+                    // Edit
+                    const index = members.findIndex(m => m.id === id);
+                    if (index !== -1) {
+                        members[index] = { ...members[index], name, email, phone };
+                    }
+                } else {
+                    // Add
+                    const newMember = {
+                        id: 'M' + Date.now(),
+                        name, email, phone,
+                        joinDate: new Date().toISOString().split('T')[0]
+                    };
+                    members.push(newMember);
+                }
+
+                Storage.set(DB_KEYS.MEMBERS, members);
+                closeModal();
+                renderMembers(members);
+            });
+
+            window.deleteMember = (id) => {
+                if (confirm('Are you sure you want to delete this member?')) {
+                    members = members.filter(m => m.id !== id);
+                    Storage.set(DB_KEYS.MEMBERS, members);
+                    renderMembers(members);
+                }
+            };
+
+            // Search
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = members.filter(m =>
+                    m.name.toLowerCase().includes(term) ||
+                    m.email.toLowerCase().includes(term)
+                );
+                renderMembers(filtered);
+            });
+
+            // Init
+            renderMembers(members);
+        });
+    </script>
+</body>
+
+</html>

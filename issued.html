@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Books - Library MS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <i class="fas fa-book-reader fa-2x" style="color: var(--primary);"></i>
+                <h2>LibMaster</h2>
+            </div>
+
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="issued.html" class="nav-link active">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Issue/Return</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Members</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <nav class="top-navbar">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="transaction-search" placeholder="Search transactions...">
+                </div>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <div class="profile-avatar"><img src="https://ui-avatars.com/api/?name=Admin+User" alt="Profile">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <section class="animate-fade-in">
+                <div class="header-box" style="margin-bottom: 2rem;">
+                    <h1>Circulation Desk</h1>
+                    <p class="text-muted">Issue books to members and manage returns.</p>
+                </div>
+
+                <!-- Issue Form -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: var(--primary);">Issue a New Book</h3>
+                    <form id="issue-form" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+                        <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                            <label class="form-label">Select Book</label>
+                            <select id="book-select" class="form-control" required>
+                                <option value="">-- Choose Book --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                            <label class="form-label">Select Member</label>
+                            <select id="member-select" class="form-control" required>
+                                <option value="">-- Choose Member --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="width: 150px; margin-bottom: 0;">
+                            <label class="form-label">Return Date</label>
+                            <input type="date" id="return-date" class="form-control" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="height: 46px;">
+                            Confirm Issue
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">Recent Transactions</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Book Info</th>
+                                    <th>Member Info</th>
+                                    <th>Dates</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="issued-list">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const books = Storage.get(DB_KEYS.BOOKS) || [];
+            const members = Storage.get(DB_KEYS.MEMBERS) || [];
+            let issued = Storage.get(DB_KEYS.ISSUED) || [];
+
+            const bookSelect = document.getElementById('book-select');
+            const memberSelect = document.getElementById('member-select');
+            const listContainer = document.getElementById('issued-list');
+
+            // Check for pre-selected book from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const preSelectBookId = urlParams.get('bookId');
+
+            // Populate Dropdowns
+            books.forEach(b => {
+                if (b.available > 0) {
+                    const opt = document.createElement('option');
+                    opt.value = b.id;
+                    opt.textContent = `${b.title} (Qty: ${b.available})`;
+                    if (preSelectBookId && b.id === preSelectBookId) opt.selected = true;
+                    bookSelect.appendChild(opt);
+                }
+            });
+
+            members.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = `${m.name} (${m.phone})`;
+                memberSelect.appendChild(opt);
+            });
+
+            // Set default Return Date (7 days from now)
+            const date = new Date();
+            date.setDate(date.getDate() + 7);
+            document.getElementById('return-date').valueAsDate = date;
+
+            // Render List
+            function renderList(data) {
+                listContainer.innerHTML = '';
+                if (data.length === 0) {
+                    listContainer.innerHTML = '<tr><td colspan="6" style="text-align:center;">No active transactions.</td></tr>';
+                    return;
+                }
+
+                // Sort by Issue Date (Newest first)
+                data.sort((a, b) => new Date(b.issueDate) - new Date(a.issueDate));
+
+                data.forEach(item => {
+                    const book = books.find(b => b.id === item.bookId) || { title: 'Unknown Book', cover: '' };
+                    const member = members.find(m => m.id === item.memberId) || { name: 'Unknown Member', email: '' };
+
+                    // Check Overdue
+                    const today = new Date().toISOString().split('T')[0];
+                    let statusClass = 'badge-success';
+                    let statusText = item.status;
+
+                    if (item.status === 'Issued' && item.returnDate < today) {
+                        statusText = 'Overdue';
+                        statusClass = 'badge-danger';
+                        // Update status in storage lazily (visual only here, but could persist)
+                    } else if (item.status === 'Returned') {
+                        statusClass = 'badge-secondary'; // or some other color
+                        // Actually let's use success for returned, warning for issued, danger for overdue
+                        statusClass = 'badge-success';
+                    } else {
+                        statusClass = 'badge-warning'; // Issued
+                    }
+
+                    // Specific override
+                    if (statusText === 'Returned') statusClass = 'badge-success';
+                    if (statusText === 'Issued') statusClass = 'badge-warning';
+                    if (statusText === 'Overdue') statusClass = 'badge-danger';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><span style="font-family: monospace; color: var(--text-muted);">#${item.id.substr(-6)}</span></td>
+                        <td>
+                            <div style="font-weight: 500;">${book.title}</div>
+                        </td>
+                        <td>
+                            <div>${member.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${member.email}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem;">Issued: ${item.issueDate}</div>
+                            <div style="font-size: 0.9rem; color: var(--danger);">Return: ${item.returnDate}</div>
+                        </td>
+                        <td>
+                            <span class="badge ${statusClass}">${statusText}</span>
+                        </td>
+                        <td>
+                            ${item.status !== 'Returned' ?
+                            `<button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="returnBook('${item.id}')">Return</button>` :
+                            '<i class="fas fa-check-circle" style="color: var(--success);"></i>'
+                        }
+                        </td>
+                    `;
+                    listContainer.appendChild(row);
+                });
+            }
+
+            // Issue Book
+            document.getElementById('issue-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const bookId = bookSelect.value;
+                const memberId = memberSelect.value;
+                const returnDate = document.getElementById('return-date').value;
+
+                // Decrement Book Availability
+                const bookIdx = books.findIndex(b => b.id === bookId);
+                if (books[bookIdx].available > 0) {
+                    books[bookIdx].available--;
+                    Storage.set(DB_KEYS.BOOKS, books);
+
+                    const newItem = {
+                        id: 'T' + Date.now(),
+                        bookId,
+                        memberId,
+                        issueDate: new Date().toISOString().split('T')[0],
+                        returnDate,
+                        status: 'Issued'
+                    };
+                    issued.push(newItem);
+                    Storage.set(DB_KEYS.ISSUED, issued);
+
+                    alert('Book issued successfully!');
+                    location.reload(); // Simple reload to refresh data and options
+                } else {
+                    alert('Book is not available!');
+                }
+            });
+
+            // Return Book
+            window.returnBook = (id) => {
+                if (confirm('Mark this book as returned?')) {
+                    const idx = issued.findIndex(i => i.id === id);
+                    if (idx !== -1) {
+                        issued[idx].status = 'Returned';
+
+                        // Increment Availability
+                        const bookId = issued[idx].bookId;
+                        const bookIdx = books.findIndex(b => b.id === bookId);
+                        if (bookIdx !== -1) {
+                            books[bookIdx].available++;
+                            Storage.set(DB_KEYS.BOOKS, books);
+                        }
+
+                        Storage.set(DB_KEYS.ISSUED, issued);
+                        renderList(issued);
+                    }
+                }
+            };
+
+            renderList(issued);
+        });
+    </script>
+</body>
+
+</html>
