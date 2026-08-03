@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6c63ff;
+  --color-primary-light: #8f88ff;
+  --color-secondary: #00bfa6;
+  --color-accent: #ffc107;
+  --color-danger: #ff5252;
+  --color-success: #2ecc71;
+  --color-warning: #f1c40f;
+
+  /* Dynamic Variables mapped for Tailwind classes */
+  --color-bg-light: var(--theme-bg-light);
+  --color-bg-white: var(--theme-bg-white);
+  --color-text-dark: var(--theme-text-dark);
+  --color-text-muted: var(--theme-text-muted);
+  --color-border-color: var(--theme-border-color);
+
+  --font-main: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer base {
+  /* Light Mode Colors (Default) */
+  :root,
+  [data-theme="light"] {
+    --theme-bg-light: #f5f7fb;
+    --theme-bg-white: #ffffff;
+    --theme-text-dark: #2c3e50;
+    --theme-text-muted: #7f8c8d;
+    --theme-border-color: #e2e8f0;
+  }
+
+  /* Dark Mode Colors */
+  [data-theme="dark"] {
+    --theme-bg-light: #121212;
+    --theme-bg-white: #1e1e2e;
+    --theme-text-dark: #f1f1f1;
+    --theme-text-muted: #a0a0b0;
+    --theme-border-color: #2d2d3f;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-bg-light text-text-dark font-body min-h-screen overflow-x-hidden transition-colors duration-300;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-main font-semibold text-text-dark;
+  }
+}
+
+/* Updated Glassmorphism Utility */
+@utility glass {
+  @apply bg-bg-white/80 backdrop-blur-md border border-border-color/50;
+}
