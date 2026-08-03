@@ -1,4 +1,4 @@
-# 📚 Library Management System
+# 📖 Library Management System
 
 A modern **Library Management System** built using the **MERN Stack (MongoDB, Express.js, React.js, Node.js)**. It provides an efficient way to manage books, members, and library operations through a clean, responsive, and user-friendly interface.
 
